@@ -38,12 +38,17 @@ except ImportError:
     DISCORD_AVAILABLE = False
 
 # Parse arguments
-parser = argparse.ArgumentParser(description='OAK-D Person Detector (DepthAI 3.x)')
+parser = argparse.ArgumentParser(
+    description='OAK-D Person Detector (DepthAI 3.x)')
 parser.add_argument('--log', action='store_true', help='Log events to file')
-parser.add_argument('--threshold', type=float, default=0.5, help='Detection confidence threshold (0-1)')
-parser.add_argument('--discord', action='store_true', help='Enable Discord notifications')
-parser.add_argument('--discord-quiet', action='store_true', help='Only send Discord notifications for person detected (not when clear)')
-parser.add_argument('--model', type=str, default='luxonis/yolov6-nano:r2-coco-512x288', help='Model reference from Luxonis Hub')
+parser.add_argument('--threshold', type=float, default=0.5,
+                    help='Detection confidence threshold (0-1)')
+parser.add_argument('--discord', action='store_true',
+                    help='Enable Discord notifications')
+parser.add_argument('--discord-quiet', action='store_true',
+                    help='Only send Discord notifications for person detected (not when clear)')
+parser.add_argument('--model', type=str, default='luxonis/yolov6-nano:r2-coco-512x288',
+                    help='Model reference from Luxonis Hub')
 args = parser.parse_args()
 
 # Global state tracking
@@ -67,7 +72,8 @@ SCREENSHOT_UPDATE_INTERVAL = 5  # Save screenshot every 5 seconds
 last_screenshot_time = 0
 
 # COCO class names - person is class 0
-COCO_CLASSES = ['person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat']
+COCO_CLASSES = ['person', 'bicycle', 'car', 'motorcycle',
+                'airplane', 'bus', 'train', 'truck', 'boat']
 
 
 def log_event(message: str):
@@ -91,7 +97,8 @@ def send_discord_notification(message: str, force: bool = False):
 
     if not os.getenv('DISCORD_WEBHOOK_URL'):
         if force:  # Only warn on startup
-            log_event("WARNING: Discord notifications requested but DISCORD_WEBHOOK_URL not set")
+            log_event(
+                "WARNING: Discord notifications requested but DISCORD_WEBHOOK_URL not set")
         return
 
     # Send notification (don't add timestamp as it's already in the message)
@@ -149,7 +156,8 @@ def run_detection():
             log_event("Creating pipeline...")
 
             # Load model from Luxonis Hub
-            model_description = dai.NNModelDescription(args.model, platform=platform)
+            model_description = dai.NNModelDescription(
+                args.model, platform=platform)
             nn_archive = dai.NNArchive(dai.getModelFromZoo(model_description))
 
             # Create camera input (using ColorCamera - Camera node API is different)
@@ -164,9 +172,11 @@ def run_detection():
             )
 
             # Get output queues (MUST be created before pipeline.start())
-            q_det = nn_with_parser.out.createOutputQueue(maxSize=4, blocking=False)
+            q_det = nn_with_parser.out.createOutputQueue(
+                maxSize=4, blocking=False)
             # Get preview frames directly from camera for screenshots
-            q_preview = cam_rgb.preview.createOutputQueue(maxSize=4, blocking=False)
+            q_preview = cam_rgb.preview.createOutputQueue(
+                maxSize=4, blocking=False)
 
             log_event("Pipeline created.")
 
@@ -187,7 +197,7 @@ def run_detection():
                     if hasattr(detections_msg, 'detections'):
                         all_detections = detections_msg.detections
                         person_detections = [d for d in all_detections
-                                           if d.label == 0 and d.confidence >= args.threshold]
+                                             if d.label == 0 and d.confidence >= args.threshold]
                         person_count = len(person_detections)
                     else:
                         person_count = 0
@@ -220,7 +230,8 @@ def run_detection():
                                 pending_state_time = None
 
                                 # Update status file
-                                update_status_file(person_detected, person_count, running=True)
+                                update_status_file(
+                                    person_detected, person_count, running=True)
                         else:
                             # New pending state - start the timer
                             pending_state = person_detected
