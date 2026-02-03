@@ -19,6 +19,8 @@ import os
 import json
 import cv2
 import numpy as np
+import socket
+import getpass
 from pathlib import Path
 from datetime import datetime
 
@@ -105,7 +107,7 @@ def send_discord_notification(message: str, force: bool = False):
     send_notification(message, add_timestamp=False)
 
 
-def update_status_file(detected: bool, count: int, running: bool = True):
+def update_status_file(detected: bool, count: int, running: bool = True, username: str = None, hostname: str = None):
     """Update status file for Discord bot integration."""
     try:
         status_data = {
@@ -114,6 +116,13 @@ def update_status_file(detected: bool, count: int, running: bool = True):
             "timestamp": datetime.now().isoformat(),
             "running": running
         }
+
+        # Add user and hostname if provided
+        if username:
+            status_data["username"] = username
+        if hostname:
+            status_data["hostname"] = hostname
+
         STATUS_FILE.write_text(json.dumps(status_data, indent=2))
     except Exception as e:
         log_event(f"WARNING: Could not update status file: {e}")
@@ -122,6 +131,17 @@ def update_status_file(detected: bool, count: int, running: bool = True):
 def run_detection():
     """Main detection loop using DepthAI 3.x."""
     global log_file, last_status, last_count, pending_state, pending_state_time, last_status_update_time, last_screenshot_time
+
+    # Get user and hostname for smart object announcements
+    try:
+        username = getpass.getuser()
+    except:
+        username = os.getenv('USER', 'unknown')
+
+    try:
+        hostname = socket.gethostname()
+    except:
+        hostname = 'unknown'
 
     # Open log file if requested
     if args.log:
@@ -137,12 +157,13 @@ def run_detection():
     log_event("Press Ctrl+C to exit\n")
 
     # Initialize status file
-    update_status_file(detected=False, count=0, running=True)
+    update_status_file(detected=False, count=0, running=True, username=username, hostname=hostname)
     last_status_update_time = time.time()  # Initialize timestamp
 
-    # Send startup notification to Discord
+    # Send startup notification to Discord with user and host info
     if args.discord:
-        send_discord_notification(startup_msg)
+        discord_startup = f"🎥 **{username}** is now running person_detector.py on **{hostname}**"
+        send_discord_notification(discord_startup)
 
     try:
         # Connect to device
@@ -231,7 +252,7 @@ def run_detection():
 
                                 # Update status file
                                 update_status_file(
-                                    person_detected, person_count, running=True)
+                                    person_detected, person_count, running=True, username=username, hostname=hostname)
                         else:
                             # New pending state - start the timer
                             pending_state = person_detected
@@ -252,7 +273,7 @@ def run_detection():
                     # Update status file with current state
                     detected = last_status if last_status is not None else False
                     count = last_count if last_status else 0
-                    update_status_file(detected, count, running=True)
+                    update_status_file(detected, count, running=True, username=username, hostname=hostname)
                     last_status_update_time = current_time
 
                 # Periodic screenshot save (for Discord bot)
@@ -272,7 +293,10 @@ def run_detection():
     except KeyboardInterrupt:
         shutdown_msg = "Person detector stopped"
         log_event(f"\n{shutdown_msg}")
-        send_discord_notification(shutdown_msg)
+        # Send shutdown notification to Discord with user and host info
+        if args.discord:
+            discord_shutdown = f"📴 **{username}** stopped person_detector.py on **{hostname}** - camera is free"
+            send_discord_notification(discord_shutdown)
 
     finally:
         if log_file:
