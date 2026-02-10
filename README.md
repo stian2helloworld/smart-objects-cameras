@@ -118,6 +118,30 @@ Type `yes` and press Enter.
 - Check your SSH config file (`~/.ssh/config`) has the correct IP addresses
 - Ask your instructor for the Pi's IP address if needed
 
+**Example SSH config file (`~/.ssh/config`):**
+
+```
+# Orbit - 16GB Pi
+Host orbit
+    HostName 10.1.x.x
+    User your_username
+    IdentityFile ~/.ssh/id_ed25519_smartobjects
+
+# Gravity - 16GB Pi
+Host gravity
+    HostName 10.1.x.x
+    User your_username
+    IdentityFile ~/.ssh/id_ed25519_smartobjects
+
+# Horizon - 16GB Pi
+Host horizon
+    HostName 10.1.x.x
+    User your_username
+    IdentityFile ~/.ssh/id_ed25519_smartobjects
+```
+
+**Note:** Replace `10.1.x.x` with the actual IP addresses provided by your instructor. The `.local` hostnames don't work reliably on this network, so use IP addresses instead.
+
 ### VNC Connection (Optional)
 
 For graphical desktop access to any of the Pis:

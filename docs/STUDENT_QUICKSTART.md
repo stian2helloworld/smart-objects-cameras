@@ -386,7 +386,10 @@ DISCORD_BOT_TOKEN=get_from_instructor_for_your_pi
 Before you can connect to the Pis, make sure your SSH config is set up. Test it:
 
 ```bash
+# Connect to any of the three cameras
 ssh orbit
+ssh gravity
+ssh horizon
 ```
 
 **If it works:** Skip to [Getting Started](#getting-started).
