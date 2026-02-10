@@ -1465,4 +1465,4 @@ claude
 - Keep your `.env` file secure and never commit it to GitHub
 - **Review every change** before accepting - this protects your code and the Pi
 
-**Need more help?** Check the main [README.md](../README.md) or [WORKFLOW.md](../WORKFLOW.md) for additional guidance.
+**Need more help?** Check the main [README.md](../README.md) or [WORKFLOW.md](WORKFLOW.md) for additional guidance.
