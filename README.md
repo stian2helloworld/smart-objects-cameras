@@ -45,8 +45,8 @@ Instead, you:
 
 ### For Students
 
-- **[STUDENT_QUICKSTART.md](STUDENT_QUICKSTART.md)** - Start here! Quick setup and common commands
-- **[WORKFLOW.md](WORKFLOW.md)** - How to copy files from your laptop to the Pi
+- **[STUDENT_QUICKSTART.md](docs/STUDENT_QUICKSTART.md)** - Start here! Quick setup and common commands
+- **[WORKFLOW.md](docs/WORKFLOW.md)** - How to copy files from your laptop to the Pi
 
 ### Getting Started
 
