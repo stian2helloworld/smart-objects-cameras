@@ -1494,6 +1494,99 @@ What's causing this error and how can I fix it?
 
 ---
 
+### 🚀 Using Slash Commands (Research-First Workflow)
+
+Your instructor has set up special **slash commands** that help you build features the right way - by researching existing examples first, then making decisions based on what you find.
+
+**Available Commands:**
+
+#### `/research-dev` - Full Research-First Workflow
+
+Use this when building something new or modifying existing code. It guides Claude Code through a structured process:
+
+```bash
+claude
+/research-dev
+```
+
+Then tell Claude what you want to build. For example:
+```
+I want to add a command to the Discord bot that tells me the temperature from a sensor.
+```
+
+**What it does:**
+1. **Research Phase** - Checks existing examples, reads project docs, understands patterns
+2. **Decision Phase** - Compares approaches and explains why one is better
+3. **Design Phase** - Creates architecture that matches the project
+4. **Implementation** - Builds the code
+5. **Review** - Makes sure it follows project patterns
+
+**Why this is helpful:**
+- Prevents reinventing the wheel (checks oak-examples first!)
+- Follows project patterns automatically
+- Explains decisions so you learn
+- Creates code that fits with existing scripts
+
+#### `/help-me-code` - Student-Friendly Version
+
+A simpler version that's great for quick tasks:
+
+```bash
+claude
+/help-me-code
+```
+
+Then describe what you need. For example:
+```
+I want to modify person_detector.py to also count how many people it sees over time.
+```
+
+**What it does:**
+- Looks at similar code first
+- Explains the plan before building
+- Shows you how to use what it creates
+- Teaches as it goes
+
+**Pro tip:** Start with `/help-me-code` for simple tasks, use `/research-dev` for bigger features or when you're unsure of the best approach.
+
+#### Creating Your Own Slash Commands
+
+Want to make your own? Create a file in `.claude/commands/`:
+
+```bash
+# In your local repo (not on the Pi!)
+cd ~/path/to/smart-objects-cameras
+nano .claude/commands/my-command.md
+```
+
+Write what you want Claude to do, save it, then use it:
+
+```bash
+claude
+/my-command
+```
+
+**Example:** Create `.claude/commands/explain.md`:
+```markdown
+# Explain This Code
+
+I'm a student and I don't understand this code. Please:
+1. Read the file I'm asking about
+2. Explain what it does in simple terms
+3. Point out the important parts
+4. Tell me how it connects to other scripts in this project
+```
+
+Then use it:
+```bash
+claude
+/explain
+
+> Can you explain fatigue_detector.py?
+```
+
+---
+
 ### Safety and Best Practices
 
 **⚠️ CRITICAL: Always Review Changes Before Accepting**
